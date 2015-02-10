@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+	<div class="container">
+		<div class="col-lg-4 jumbotron">
+			{# <form action="{% url 'loginz' %}" method="POST"> #}
+				{% crispy form %}
+			{# </form> #}
+		</div>
+	</div> 
+{% endblock  %}
