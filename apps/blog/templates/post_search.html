@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+	{% crispy form %}
+
+	<div id="posts-result"></div>
+
+{% endblock content %}
+
+
+{% block script %}
+    <script type="text/javascript">
+	    $(document).ready(function(){
+		    $("#search").keyup(function(){
+		        var formData = $("#search").serializeArray();
+				ajaxGet('/post/post_list', formData, function(data){
+		            //onSuccess
+		            $('div#posts-result').html(data);
+		        });
+
+		        console.log(formData)
+		    });
+		});
+		
+    </script>
+{% endblock script %}

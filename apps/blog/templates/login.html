@@ -1,12 +1,27 @@
-{% extends "base.html" %}
-{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="{{ STATIC_URL }}css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>BLOG LATIHAN</title>
+</head>
+<body>
+    <div id="signupbox" style="margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="panel-title">Login</div>
+                <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signuplink" href="{% url 'signup' %}">Sign Up</a></div>
+            </div>  
+            <div class="panel-body" >
+                    {% load crispy_forms_tags %}
+                    
+                    {% crispy form %}
+                    
+            </div>
+        </div>
+    </div>
 
-{% block content %}
-	<div class="container">
-		<div class="col-lg-4 jumbotron">
-			{# <form action="{% url 'loginz' %}" method="POST"> #}
-				{% crispy form %}
-			{# </form> #}
-		</div>
-	</div> 
-{% endblock  %}
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js "></script>
+</body>
+</html>

@@ -11,6 +11,7 @@ from lib.mixin import *
 import lib
 from django.core.urlresolvers import reverse
 import pdb
+from django_ajax.mixin import AJAXMixin
 
 # Create your views here.
 
@@ -51,11 +52,8 @@ class SignUp(CreateView):
 
   def form_valid(self, form):
     blogger = form.save()
+    blogger.password = blogger.set_password(blogger.password)
     # pdb.set_trace()
-    asd = blogger.password
-    blogger.password = blogger.set_password(asd).save()
-    # blogger.password = asd
-    blogger.save()
     
     messages.success(self.request, "User created.")
     return super(SignUp, self).form_valid(form)  
@@ -78,6 +76,29 @@ class Index(LoggedInMixin, TemplateView):
       context['posts'] = posts.all()
     return context
 
+class Example(FormView):
+  template_name = 'post_search.html'
+  form_class = ExampleForm
+
+class PostList(AJAXMixin, TemplateView):
+  template_name = 'post_list.html'
+
+  def get_context_data(self, **kwargs):
+      context = super(PostList, self).get_context_data(**kwargs)
+      if self.request.GET:
+        title = self.request.GET.get('search', None)
+        posts = Post.objects.filter(title__icontains=title)
+
+        if posts:
+          context['posts'] = posts
+        else:
+          context['posts'] = 'Posts not found..'
+      else:
+        context['posts'] = 'Posts not found..'
+
+      return context
+
+
 class PostCreate(LoggedInMixin, CreateView):
   model = Post
   form_class = PostForm
@@ -85,7 +106,7 @@ class PostCreate(LoggedInMixin, CreateView):
 
   def form_valid(self, form):
     # pdb.set_trace()
-    post = form.save(commit=False)
+    post = form.save()
     post.user = Blogger.objects.get(pk=self.request.user.id)
     post.save()
     

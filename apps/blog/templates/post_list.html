@@ -1,0 +1,11 @@
+{% if posts != "Posts not found.." %}
+	<ul class="list-unstyled">
+		{% for post in posts %}
+			<li><a target="_blank" href="{% url 'post:detail' post.id post.slug %}">{{ post.title }}</a></li>
+		{% endfor %}
+	</ul>
+{% else %}
+	<ul class="list-unstyled">
+		<li>{{ posts }} </li>
+	</ul>
+{% endif %}

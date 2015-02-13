@@ -8,9 +8,9 @@ from django.core.urlresolvers import reverse
 
 
 class Blogger(User):
-	email = StringField(max_length=200, required=True)
-	first_name = StringField(max_length=255, required=True)
-	last_name = StringField(max_length=255, required=True)
+	email = StringField(max_length=200, required=False)
+	first_name = StringField(max_length=255, required=False)
+	last_name = StringField(max_length=255, required=False)
 
 	def __unicode__(self):
 		return self.username
