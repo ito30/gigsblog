@@ -118,6 +118,7 @@ AUTHENTICATION_BACKENDS = (
     'mongoengine.django.auth.MongoEngineBackend',
 )
 
+DEFAULT_FILE_STORAGE = '/static/'
 
 # MONGOENGINE_USER_DOCUMENT = 'apps.blog.models.User'
 

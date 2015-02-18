@@ -3,13 +3,14 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 from django.views.generic import ListView, TemplateView, DetailView, View, FormView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from apps.blog.forms import *
-from apps.blog.models import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
+from django.http import Http404
 from mongoengine.queryset import DoesNotExist
 from mongoengine.django.auth import MongoEngineBackend
+from apps.blog.forms import *
+from apps.blog.models import *
 from lib.mixin import *
-import lib
-from django.core.urlresolvers import reverse
 import pdb
 from django_ajax.mixin import AJAXMixin
 
@@ -62,41 +63,99 @@ class SignUp(CreateView):
     return reverse('index')
 
 class Index(LoggedInMixin, TemplateView):
-  template_name = 'index.html'
+  template_name = 'index.html'  
 
   def get_context_data(self,**kwargs):
     context = super(Index, self).get_context_data(**kwargs)
-    posts = Post.objects
-    context['form'] = LoginForm
+    ITEMS_PER_PAGE = 2
+    context['home'] = self.request.get_full_path()
     
     tag = self.request.GET.get('tag', None)
     if tag:
-      context['posts'] = posts.filter(tags=tag)
+      context['tag'] = tag;
+      context['posts'] = Post.objects.filter(tags=tag)
     else:
-      context['posts'] = posts.all()
+      context['posts'] = Post.objects.all()
+      paginator = Paginator(context['posts'], ITEMS_PER_PAGE)
+
+      page = self.request.GET.get('page')
+      try:
+          context['posts'] = paginator.page(page)
+      except PageNotAnInteger:
+          # If page is not an integer, deliver first page.
+          context['posts'] = paginator.page(1)
+          # raise Http404("Question does not exist")
+      except EmptyPage:
+          # If page is out of range (e.g. 9999), deliver last page of results.
+          context['posts'] = paginator.page(paginator.num_pages)
+          raise Http404("Question does not exist")
+
+      posts = context['posts']
+      # context['page'] = 'class=active' if page else ''
+      context['previous'] = '' if posts.has_previous() else 'class=disabled'
+      context['next'] = '' if posts.has_next() else 'class=disabled'
+      context['indexes'] = posts.paginator.page_range
+
+    # search = self.request.GET.get('search', None)
+    # if search:
+    #   context['search'] = search
+    #   context['posts'] = posts.filter(title__icontains=search)
+
     return context
 
-class Example(FormView):
-  template_name = 'post_search.html'
-  form_class = ExampleForm
-
-class PostList(AJAXMixin, TemplateView):
-  template_name = 'post_list.html'
+class AjaxPostSearchResult(AJAXMixin, TemplateView):
+  template_name = 'ajax_post_list.html'
 
   def get_context_data(self, **kwargs):
-      context = super(PostList, self).get_context_data(**kwargs)
+      context = super(AjaxPostSearchResult, self).get_context_data(**kwargs)
       if self.request.GET:
         title = self.request.GET.get('search', None)
+
+        # if title == '':
+        #   posts = Post.objects.all()
+        # else:
         posts = Post.objects.filter(title__icontains=title)
 
         if posts:
           context['posts'] = posts
+          context['found'] = True
         else:
-          context['posts'] = 'Posts not found..'
+          context['found'] = False
       else:
-        context['posts'] = 'Posts not found..'
+        context['posts'] = False
 
       return context
+
+# class Search(FormView):
+#   template_name = 'post_search.html'
+#   form_class = SearchForm
+
+# class PostList(AJAXMixin, TemplateView):
+#   template_name = 'ajax_post_list.html'
+
+#   def get_context_data(self, **kwargs):
+#       context = super(PostList, self).get_context_data(**kwargs)
+#       if self.request.GET:
+#         title = self.request.GET.get('search', None)
+#         posts = Post.objects.filter(title__icontains=title)
+
+#         if posts:
+#           context['posts'] = posts
+#         else:
+#           context['posts'] = 'Posts not found..'
+#       else:
+#         context['posts'] = 'Posts not found..'
+
+#       return context
+
+class FileTest(TemplateView):
+    template_name = 'file_test.html'
+
+    def get_context_data(self, **kwargs):
+        context = super( FileTest, self ).get_context_data( **kwargs )
+        context['accepted_mime_types'] = ['image/*']
+        return context
+
 
 
 class PostCreate(LoggedInMixin, CreateView):

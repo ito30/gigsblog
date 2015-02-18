@@ -24,6 +24,34 @@
 					</ul>			
 				{% endif %}	
 			</p>
+
 		{# </div> #}
 	{% endfor %}
-{% endblock %} 
+
+	{% if not tag %}
+		<ul class="pagination">
+		    <li {{ previous }}>
+				<a {% if posts.has_previous %}href="?page={{ posts.previous_page_number }}"{% endif %} aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+			{% for i in indexes %}
+				<li {% if i == posts.number %}class='active'{% endif %}><a href="?page={{ i }}">{{ i }}</a></li>
+			{% endfor %}
+
+			<li {{ next }}>
+			<a {% if posts.has_next %}href="?page={{ posts.next_page_number }}"{% endif %} aria-label="Next">
+				<span aria-hidden="true">&raquo;</span>
+			</a>
+			</li>
+		</ul>
+	{% endif %}
+{% endblock content %}
+
+{% block script %}
+	<script type="text/javascript">
+		$(document).ready(function(){
+		    searchPost();
+		});
+	</script>
+{% endblock script %} 

@@ -15,12 +15,14 @@
 	    $(document).ready(function(){
 		    $("#search").keyup(function(){
 		        var formData = $("#search").serializeArray();
-				ajaxGet('/post/post_list', formData, function(data){
-		            //onSuccess
-		            $('div#posts-result').html(data);
-		        });
-
-		        console.log(formData)
+		        if (formData[0].value != "") {
+					ajaxGet('/post/post_list', formData, function(data){
+			            //onSuccess
+			            $('div#posts-result').html(data);
+			        });
+				} else {
+					$('div#posts-result').html("");
+				}
 		    });
 		});
 		

@@ -11,7 +11,7 @@
 				{% if post.tags %}
 					<ul class="list-unstyled list-inline">
 						{% for tag in post.tags %}
-							<li><span class="label label-default"><a style="color:white" href="?tag={{ tag.id }}">{{ tag }}</a></span></li>
+							<li><span class="label label-default"><a style="color:white" href="{% url 'index' %}?tag={{ tag.id }}">{{ tag }}</a></span></li>
 						{% endfor %}
 					</ul>			
 				{% endif %}	

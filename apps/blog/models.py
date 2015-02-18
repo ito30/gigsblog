@@ -64,5 +64,8 @@ class Comment(Document):
 	def __unicode__(self):
 		return self.text
 
+class File(Document):
+	_file = FileField()
 
-
+	def __unicode__(self):
+		return self._file

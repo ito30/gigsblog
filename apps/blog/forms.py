@@ -115,8 +115,7 @@ class SignUpForm(forms.Form):
 class PostForm(forms.Form):
 	title = forms.CharField()
 	content  = forms.CharField(widget=forms.widgets.Textarea())
-	tags = forms.MultipleChoiceField(
-		widget=forms.widgets.CheckboxSelectMultiple(), 
+	tags = forms.TypedMultipleChoiceField(
 		required=False)
 
 
@@ -132,8 +131,8 @@ class PostForm(forms.Form):
 		self.helper.form_class = 'form-horizontal'
 		self.helper.layout = Layout(
 			Field('title', css_class='input-lg-4'),
-			Field('content'),
-			InlineCheckboxes('tags'),
+			'content',
+			'tags',
 			FormActions(Submit('submit', 'Submit', css_class='btn btn-info')),
 		)
 		
@@ -143,12 +142,23 @@ class PostForm(forms.Form):
 			self.fields['content'].initial = self.instance.content
 			self.fields['tags'].initial = [tag.id for tag in self.instance.tags]
 
+	# def clean_tags(self):
+	# 	tags = self.cleaned_data['tags']
+
+	# 	if self.invalid_choice:
+	# 		pdb.set_trace()
+			
+	# 	return tags
+
 	def save(self):
 		post = self.instance if self.instance else Post()
-		# pdb.set_trace()
 		post.title = self.cleaned_data['title']
 		post.content = self.cleaned_data['content']
 		# post.is_published = self.cleaned_data['is_published']
+		# pdb.set_trace()
+		# tags = []
+		# for tag in self.cleaned_data['tags']:
+		# 	tags
 		post.tags = Tag.objects(id__in=self.cleaned_data['tags'])
 		# post.user = Blogger.objects.get(id=kwargs['user_id'])
 		# print user_id
@@ -156,7 +166,7 @@ class PostForm(forms.Form):
 		# 	post.save()
 		return post
 
-class ExampleForm(forms.Form):
+class SearchForm(forms.Form):
     search = forms.CharField()
 
     helper = FormHelper()
@@ -166,5 +176,12 @@ class ExampleForm(forms.Form):
     	# FormActions(HTML("<input class='btn btn-info' type='button' value='Search' name='search' data-toggle='modal' data-target='#myModal' onclick='tes()' />")),
     )
 
+class FileForm(forms.Form):
+    _file = forms.FileField()
+
+    helper = FormHelper()
+    helper.layout = Layout(
+    	'_file',
+    )
 
 	

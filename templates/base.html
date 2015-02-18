@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	{% block css %}	{% endblock css %}
 	<meta charset="UTF-8">
 	<title>BLOG LATIHAN</title>
 </head>
@@ -27,20 +28,24 @@
 		                <ul class="dropdown-menu" role="menu">
 							<li><a href="{% url 'index' %} ">View All Post</a></li>
 							<li><a href="{% url 'post:post_create' %} ">Create Post</a></li>
-							<li><a href="{% url 'post:post_search' %} ">Search Post</a></li>
+							{# <li><a href="{% url 'post:post_search' %} ">Search Post</a></li> #}
 		                </ul>
 		            </li>
-		            {% endif %} 
-					{% if user.is_authenticated %} <li><a href="#">Admin</a></li>{% endif %} 
+		            <li><a href="#">Admin</a></li>{% endif %} 
+		            {% if home %}
+				        <div class="navbar-form navbar-left form-group">
+				        	<input class="form-control" id="search" name="search" placeholder="Search Posts" type="text">
+				        </div>
+		            {% endif %}
 				</ul>
 				<form id="myform" method="get" action="{% url 'logout' %}">
 				<ul class="nav navbar-nav navbar-right">
-					{% if user.is_authenticated %}
+				{% if user.is_authenticated %}
 	            {% csrf_token %}
-	            <li><a href="#" onclick="document.forms[0].submit();return false;">Logout</a></li>
-					{% else %}
-						<li><a href="{% url 'login' %} ">Login</a></li>
-					{% endif %}
+	            	<li><a href="#" onclick="document.forms[0].submit();return false;">Logout</a></li>
+				{% else %}
+					<li><a href="{% url 'login' %} ">Login</a></li>
+				{% endif %}
         </form>
 				</ul>
 			</div>
@@ -48,17 +53,15 @@
 	</nav>
 	
 	<div id="content" class="container">
-		{% block content %} {% endblock %} 
+		{% block content %} {% endblock content %} 
 	</div>
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}django_ajax/js/jquery.ajax.min.js"></script>
 	<script type="text/javascript" src="{{ STATIC_URL }}gigs/js/myscript.js "></script>
-
-	<div id="script">
-		{% block script %} {% endblock %}
-	</div>
-
+	<script type="text/javascript">		
+    </script>
+	{% block script %} {% endblock script %}
 </body>
 </html>

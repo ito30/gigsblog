@@ -10,6 +10,7 @@ urlpatterns = patterns('',
 
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.Index.as_view(), name='index'),
+    url(r'^ajax_post_search', views.AjaxPostSearchResult.as_view(), name='ajax_post_search'),
     url(r'^gigs/login', views.Login.as_view(), name='login'),
     url(r'^gigs/signup', views.SignUp.as_view(), name='signup'),
     url(r'^gigs/logout', 'django.contrib.auth.views.logout',{'next_page':'/'}, name='logout'),
